@@ -6,9 +6,10 @@ function Header() {
     const [data, setdata] = useState({});
 
     useEffect(()=>{
-        fetch("http://192.168.18.54:5000/api/randomquote")
+        fetch(`${process.env.REACT_APP_BASE_URL}/api/randomquote`)
       .then((res) => res.json())
       .then((f) => setdata(f));
+      console.log(process.env.REACT_APP_BASE_URL,"HELllaaa")
     },[])
 
   return (

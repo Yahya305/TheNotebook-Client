@@ -40,7 +40,7 @@ function CreateBlog(props) {
         // When Edit Mode is Enabled
         fetch(
           // `http://localhost:5000/api/notes/updatenote/${blogProps[0].edit._id}`,
-          `http://192.168.18.54:5000/api/notes/updatenote/${blogProps[0].edit._id}`,
+          `${process.env.REACT_APP_BASE_URL}/api/notes/updatenote/${blogProps[0].edit._id}`,
           {
             method: "PUT",
             headers: {
@@ -62,7 +62,8 @@ function CreateBlog(props) {
       } else {
         try {
           // fetch("http://localhost:5000/api/notes/postnote", {
-          fetch("http://192.168.18.54:5000/api/notes/postnote", {
+          // fetch("http://192.168.18.54:5000/api/notes/postnote", {
+          fetch(`${process.env.REACT_APP_BASE_URL}/api/notes/postnote`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -1,7 +1,7 @@
 import React, { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../App';
-
+import "../styles/Login.scss";
 
 
 function Signup() {
@@ -10,6 +10,8 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [displayErrMsg, setDisplayErrMsg]= useState(false);
+
   const navigate = useNavigate();
   const token = useContext(AuthContext);
 
@@ -38,7 +40,7 @@ function Signup() {
 
       console.log(creds)
 
-      fetch("http://localhost:5000/api/auth/Sign-in", {
+      fetch(`${process.env.REACT_APP_BASE_URL}/api/auth/Sign-in`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,6 +51,7 @@ function Signup() {
         .then((res) => {
           if (res.error) {
             console.log(res.error);
+            setDisplayErrMsg(true)
           } else {
             console.log(res);
             localStorage.setItem("token", res.token)
@@ -63,8 +66,11 @@ function Signup() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <>
+    <form className="login-container" onSubmit={handleSubmit} method="post">
+      <div className="creds">
       <h1>Sign up</h1>
+      <div className="field">
       <label htmlFor="firstname">Firstname:</label>
       <input
         type="text"
@@ -73,8 +79,9 @@ function Signup() {
         value={firstname}
         onChange={(event) => setfirstname(event.target.value)}
         required
-      />
-      <br />
+        />
+        </div>
+      <div className="field">
       <label htmlFor="lastname">Lastname:</label>
       <input
         type="text"
@@ -83,18 +90,13 @@ function Signup() {
         value={lastname}
         onChange={(event) => setlastname(event.target.value)}
         required
-      />
-      <br />
-      <label htmlFor="email">Email:</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-        required
-      />
-      <br />
+        />
+        </div>
+      <div className="field">
+        <label htmlFor="email">Email: &nbsp;</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div className="field">
       <label htmlFor="password">Password:</label>
       <input
         type="password"
@@ -103,8 +105,9 @@ function Signup() {
         value={password}
         onChange={(event) => setPassword(event.target.value)}
         required
-      />
-      <br />
+        />
+        </div>
+      <div className="field">
       <label htmlFor="confirm-password">Confirm Password:</label>
       <input
         type="password"
@@ -113,10 +116,36 @@ function Signup() {
         value={confirmPassword}
         onChange={(event) => setConfirmPassword(event.target.value)}
         required
-      />
-      <br />
+        />
+        </div>
+      </div>
       <button type="submit">Sign up</button>
     </form>
+    
+
+
+
+{/* 
+    <div hidden={!displayErrMsg}>Please Login with the correct credentials</div>
+      <form className="login-container" onSubmit={handleSubmit} action="/login" method="post" >
+        <div className="creds">
+        <h1>Login</h1>
+        <div className="field">
+        <label htmlFor="email">Email: &nbsp;</label>
+        <input type="text" id="email" name="email" required />
+        </div>
+        <div className="field">
+        <label htmlFor="password">Password: &nbsp;</label>
+        <input type="password" id="password" name="password" required />
+        </div>
+        </div>
+        <div className="login-btns">
+        <button type="submit">Login</button>
+        <button id="signup-btn">
+        </button>
+        </div>
+      </form> */}
+        </>
   );
 }
 

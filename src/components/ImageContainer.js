@@ -3,7 +3,7 @@ import axios from "axios";
 import React from "react";
 import { useState, useEffect } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Slider } from "@mui/material";
+import { Slider,Snackbar,Alert } from "@mui/material";
 // import placeholder from "./placeholder.png";
 
 function ImageContainer() {
@@ -11,12 +11,14 @@ function ImageContainer() {
   const [imgResult, setImgResult] = useState("placeholder.png");
   const [inpFile, setInpFile] = useState(null);
   const [loadProgress, setLoadProgress] = useState(-1);
-  const [process, setProcess] = useState();
+  const [imgProcess, setImgProcess] = useState();
   const [tempBlob, setTempBlob] = useState();
   const [sliderValue, setSliderValue] = useState(undefined);
   const [cancelConfirm, setCancelConfirm] = useState(true);
   const [hideSlider, setHideSlider] = useState(true);
   const [blbUrl, setBlbUrl] = useState("");
+  const [openDangerSnack, setOpenDangerSnack] = useState(false);
+  const [successSnack, setSuccessSnack] = useState(false);
 
   useEffect(() => {
     return () => document.removeEventListener("click", toggleProcess);
@@ -36,7 +38,8 @@ function ImageContainer() {
     };
     try {
       const res = await axios.postForm(
-        `http://192.168.18.54:5000/api/imagelab/edit?${process}=${
+        `${process.env.REACT_APP_BASE_URL}/api/imagelab/edit?${imgProcess}=${
+        // `http://localhost:5000/api/imagelab/edit?${imgProcess}=${
           sliderValue ? sliderValue / 100 : undefined
         }`,
         // `http://localhost:5000/api/imagelab/edit?quality=0`,
@@ -83,9 +86,13 @@ function ImageContainer() {
   function handleFileSelect(event) {
     const file = event.target.files[0];
     console.log("done");
+    if (file.size>3984589 || file.type!=="image/png") {
+      setOpenDangerSnack(true)
+      return
+    }
     setInpFile(file);
     setImageUrl(URL.createObjectURL(file));
-    if (process === "contrast" || process === "brightness") {
+    if (imgProcess === "contrast" || imgProcess === "brightness") {
       setCancelConfirm(false);
       setHideSlider(false);
     }
@@ -106,7 +113,7 @@ function ImageContainer() {
     formData.append("testImage", file);
     try {
       const res = await axios.postForm(
-        "http://192.168.18.54:5000/api/imagelab/save",
+        `${process.env.REACT_APP_BASE_URL}/api/imagelab/save`,
         formData,
         {
           method: "POST",
@@ -116,6 +123,7 @@ function ImageContainer() {
         }
       );
       if (res.status === 200) {
+        setSuccessSnack(true)
         console.log("done");
         console.log(res.data.message);
       } else {
@@ -128,7 +136,7 @@ function ImageContainer() {
 
   const toggleProcess = (event, process) => {
     // setProcess(event.target.textContent);
-    setProcess(process);
+    setImgProcess(process);
     console.log(process);
     document.getElementById("dropbtn").textContent = event.target.textContent;
     document.getElementById("image-input").click();
@@ -138,8 +146,23 @@ function ImageContainer() {
     console.log(e.target.value);
     setSliderValue(e.target.value);
   };
+
+
   return (
     <>
+      <div>
+
+      <Snackbar open={openDangerSnack} autoHideDuration={3000} onClose={()=>setOpenDangerSnack(false)}>
+        <Alert onClose={()=>setOpenDangerSnack(false)} severity="error" sx={{ width: "100%" }}>
+          Please Select an image file with-in 3MB
+        </Alert>
+      </Snackbar>
+      <Snackbar open={successSnack} autoHideDuration={3000} onClose={()=>setSuccessSnack(false)}>
+        <Alert onClose={()=>setSuccessSnack(false)} severity="success" sx={{ width: "100%" }}>
+          Image Saved Successfully!
+        </Alert>
+      </Snackbar>
+    </div>
       <div id="clientImg">
         <h1 className="container-heading">
           Unleash the full potential of your memories with our advanced editing

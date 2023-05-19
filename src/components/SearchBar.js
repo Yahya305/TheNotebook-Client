@@ -13,7 +13,8 @@ function SearchBar() {
     setText(event.target.value);
     if (event.target.value) {
       let res = await fetch(
-        `http://localhost:5000/api/notes/searchnotes/${event.target.value}`,
+        // `http://localhost:5000/api/notes/searchnotes/${event.target.value}`,
+        `${process.env.REACT_APP_BASE_URL}/api/notes/searchnotes/${event.target.value}`,
         {}
       );
       if (res.status===201) {

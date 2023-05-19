@@ -30,7 +30,8 @@ function App() {
     console.log(token, "app.js");
 
     if (token) {
-      fetch("http://localhost:5000/api/auth/getuser", {
+      // fetch("http://localhost:5000/api/auth/getuser", {
+        fetch(`${process.env.REACT_APP_BASE_URL}/api/auth/getuser`,{
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +86,7 @@ function App() {
           <Route path="*" element={<Errorpage />} />
         </Routes>
       </BrowserRouter>
-      <Footer/>
+      {isAuthenticated && <Footer/>}
       </div>
     </AuthContext.Provider>
   );

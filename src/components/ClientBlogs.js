@@ -18,7 +18,8 @@ function ClientBlogs() {
   });
 
   useEffect(() => {
-    fetch("http://192.168.18.54:5000/api/notes/fetchnotes", {
+    // fetch("http://192.168.18.54:5000/api/notes/fetchnotes", {
+      fetch(`${process.env.REACT_APP_BASE_URL}/api/notes/fetchnotes`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +40,8 @@ function ClientBlogs() {
 
   const deleteNote = (id) => {
     console.log("Deleting note with id :", id);
-    fetch(`http://192.168.18.54:5000/api/notes/deletenote/${id}`, {
+    // fetch(`http://192.168.18.54:5000/api/notes/deletenote/${id}`, {
+      fetch(`${process.env.REACT_APP_BASE_URL}/api/notes/deletenote/${id}`,{
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
